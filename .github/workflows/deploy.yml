@@ -1,0 +1,29 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy to W7S
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Deploy
+        uses: w7s-io/w7s-cloud@v1
+        with:
+          token: ${{ github.token }}
+          install-command: npm ci
+          build-command: npm run build
